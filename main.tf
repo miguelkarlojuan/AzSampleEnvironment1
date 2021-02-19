@@ -13,40 +13,40 @@ provider "azurerm" {
 
 module "mod_resourcegroup" {
   source        = "./resourcegroup"
-  rgname        = "resourcegroup1"
-  rglocation    = "australiaeast"
+  rgname        = var.rgname
+  rglocation    = var.rglocation
 }
 
 module "mod_storageaccount1" {
   source            = "./storageaccount"
-  storagename       = "redcloudterraform"
+  storagename       = var.storagename
   rgname            = module.mod_resourcegroup.out_resourcegroup1name
   rglocation        = module.mod_resourcegroup.out_resourcegroup1location
-  storagetier       = "Standard"
-  replicationtype   = "LRS"
+  storagetier       = var.storagetier
+  replicationtype   = var.replicationtype
 }
 
 module "mod_vnet1" {
   source        = "./vnet"
-  vnetname      = "sample-vnet"
-  vnetaddrspace = ["10.10.0.0/16"]
+  vnetname      = var.vnetname
+  vnetaddrspace = var.vnetaddrspace
   vnetlocation  = module.mod_resourcegroup.out_resourcegroup1location
   vnetrgname    = module.mod_resourcegroup.out_resourcegroup1name
   subnetname    = "subnet1"
   subnetrgname  = module.mod_resourcegroup.out_resourcegroup1name
-  addrprefix    = ["10.10.1.0/24"]
+  addrprefix    = var.addrprefix
 }
 
 module "mod_vm1" {
   source = "./vm"
-  vmnicname = "vm1-nic"
+  vmnicname = var.vm1nicname
   vmniclocation = module.mod_resourcegroup.out_resourcegroup1location
   vmnicrg = module.mod_resourcegroup.out_resourcegroup1name
   subnetid = module.mod_vnet1.out_subnet1.id
-  vmname = "vm1"
+  vmname = var.vm1name
   vmrg = module.mod_resourcegroup.out_resourcegroup1name
   vmlocation = module.mod_resourcegroup.out_resourcegroup1location
-  vmsize = "Standard_D2_v3"
-  vmadminuser = "vm1admin"
-  vmadminpass = "Welcome012345"
+  vmsize = var.vmsize
+  vmadminuser = var.vmadminuser
+  vmadminpass = var.vmadminpass
 }
